@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.anji.tmsexpand.mapper.sqlserver.reports.IWellenReportMapper" >
+	
+	<!-- 获取总站点数 -->
+	<select id="getTotalSiteNums" resultType="int">
+		select count(*)
+		  from (select 经销商编码
+		          from dbo . AF001_Plan_Detail
+		         where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		           and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		         group by 经销商编码) a
+	</select>
+	
+	<!-- 获取总到达数 -->
+	<select id="getTotalArriveNums" resultType="int">
+		select count(*)
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		    <![CDATA[and (签收人  <> '' or 签收日期 is not null) ]]> 
+	</select>
+	
+	<!-- 获取总迟到数 -->
+	<select id="getTotalLateNums" resultType="int">
+		select count(*)
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   and CONVERT(varchar(10), isnull(签收日期, getdate()), 120) >
+		       CONVERT(varchar(10), 要求到货日期, 120) 
+	</select>
+	
+	<!-- 获取破损件数 -->
+	<select id="getTotalDestroyNums" resultType="int">
+		select count(*)
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   and (破损件数 is not null or 破损件数 != 0)  
+	</select>
+	
+	<!-- 获取总订单数 -->
+	<select id="getTotalOrderNums" resultType="int">
+		 select count(*)
+		  from dbo . AF001_Plan_Detail
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 路线订单数 -->
+	<select id="ListOrderRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		 select count(*) num, SUBSTRING(区域, 1, 3)route
+			 from dbo . AF001_Plan_Detail t
+			where 项目名称 = #{projectName,jdbcType=VARCHAR}
+			  and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+			group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 路线到达数 -->
+	<select id="ListArriveRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		 select count(*) num, SUBSTRING(区域, 1, 3) route
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   <![CDATA[ and (签收人  <> '' or 签收日期 is not null) ]]> 
+		  group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 路线迟到数 -->
+	<select id="ListLateRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		 select count(*) num, SUBSTRING(区域, 1, 3) route
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   and CONVERT(varchar(10), isnull(签收日期, getdate()), 120) >
+		       CONVERT(varchar(10), 要求到货日期, 120)
+		 group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 获取所有路线 -->
+	<select id="ListRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		select distinct SUBSTRING(区域, 1, 3) route
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		 order by route
+	</select>
+	
+	<!-- 路线站点数 -->
+	<select id="ListSiteRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		 select count(*) num, SUBSTRING(区域, 1, 3) route
+			 from dbo . AF001_Plan_Detail t
+			where 项目名称 = #{projectName,jdbcType=VARCHAR}
+			  and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+			group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 线路破损数 -->
+	<select id="ListDestroyRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		select count(*) num, SUBSTRING(区域, 1, 3) route
+		  from dbo . AF001_Plan_Detail t
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   and (破损件数 is not null or 破损件数 != 0)
+		 group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 日线路详细信息 -->
+	<select id="listRouteDayInfo" resultType="map">
+		select CONVERT(varchar(10),t.提货日期, 120) pickDate,
+		       t.经销商编码 siteCode,
+		       t.经销商名称 siteName,
+		       CONVERT(varchar(100),t.要求到货日期, 120)  askDate,
+			   CONVERT(varchar(100), t.签收日期, 120) arriveDate,
+		       (select top(1) isnull(CONVERT(varchar(100), s.SEND_TIME, 120), CONVERT(varchar(100), s.CREATE_TIME, 120))
+		          from dbo . SMPV_SMS_SEND s
+		         where s.ORDER_NO = t.运单号
+		           and s.NODES_TYPE in ('3','5')) noticeDate,
+		       (SELECT datediff(minute,
+		                        (select top(1) isnull(CONVERT(varchar(100), s.SEND_TIME, 120), CONVERT(varchar(100), s.CREATE_TIME, 120))
+		                           from dbo . SMPV_SMS_SEND s
+		                          where s.ORDER_NO = t.运单号
+		                            and s.NODES_TYPE in ('3','5')),
+		                        CONVERT(varchar(100), t.签收日期, 120))) sendUseTime,
+		       case
+		         when CONVERT(varchar(10), isnull(t.签收日期, getdate()), 120) >
+		              CONVERT(varchar(10), t.要求到货日期, 120) then
+		          '是'
+		         else
+		          '否'
+		       end isLate,
+		       case ISNULL(t.破损件数, 0)
+		         when 0 then
+		          '否'
+		         else
+		          '是'
+		       end isDestroy
+		  from dbo . AF001_Plan_Detail t
+		 where t.项目名称 =  #{projectName,jdbcType=VARCHAR}
+		   and t.提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   <if test="route != null and route != '' and route != 'sss'">
+	           and SUBSTRING(区域, 1, 3)= #{route,jdbcType=VARCHAR}
+		   </if>
+	</select>
+	
+	<!-- 周线路详细信息 -->
+	<select id="listRouteWeekInfo" resultType="map">
+		select CONVERT(varchar(10),t.提货日期, 120) pickDate,
+		       t.经销商编码 siteCode,
+		       t.经销商名称 siteName,
+		       CONVERT(varchar(100),t.要求到货日期, 120)  askDate,
+			   CONVERT(varchar(100), t.签收日期, 120) arriveDate,
+		       (select top(1) isnull(CONVERT(varchar(100), s.SEND_TIME, 120), CONVERT(varchar(100), s.CREATE_TIME, 120))
+		          from dbo . SMPV_SMS_SEND s
+		         where s.ORDER_NO = t.运单号
+		           and s.NODES_TYPE in ('3','5')) noticeDate,
+		       (SELECT datediff(minute,
+		                        (select top(1) isnull(CONVERT(varchar(100), s.SEND_TIME, 120), CONVERT(varchar(100), s.CREATE_TIME, 120))
+		                           from dbo . SMPV_SMS_SEND s
+		                          where s.ORDER_NO = t.运单号
+		                            and s.NODES_TYPE in ('3','5')),
+		                        CONVERT(varchar(100), t.签收日期, 120))) sendUseTime,
+		       case
+		         when CONVERT(varchar(10), isnull(t.签收日期, getdate()), 120) >
+		              CONVERT(varchar(10), t.要求到货日期, 120) then
+		          '是'
+		         else
+		          '否'
+		       end isLate,
+		       case ISNULL(t.破损件数, 0)
+		         when 0 then
+		          '否'
+		         else
+		          '是'
+		       end isDestroy
+		  from dbo . AF001_Plan_Detail t
+		 where t.项目名称 =  #{projectName,jdbcType=VARCHAR}
+		   and t.提货日期 = #{dateValue,jdbcType=VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.anji.tmsexpand.mapper.sqlserver.reports.IEstimatorReportMapper" >
+	
+	<!-- 查询日基础信息 -->
+	<select id="queryDayBaseInfo" resultType="map">
+		select sum(估计立方) gf, sum(实际立方) sf, sum(货值) thingsValue
+		  from SMPV_ASC_Act_Detail t
+		<if test="dateSymbol == 'day' or dateSymbol == 'week'">
+			where CONVERT(varchar(10), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="dateSymbol == 'year'">
+			where CONVERT(varchar(4), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="dateSymbol == 'month'">
+			where CONVERT(varchar(7), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<!-- 查询线路方数 -->
+	<select id="listRouteData" resultType="map">
+		select 线路 route, sum(估计立方) gf, sum(实际立方) sf, sum(货值) hz
+		  from SMPV_ASC_Act_Detail t
+		 where t.日期  = #{dateValue,jdbcType=VARCHAR}
+		 	group by 线路
+		 	order by 线路
+	</select>
+	
+	<!-- 查询线路信息 -->
+	<select id="listRouteDayInfo" resultType="map">
+	    select CONVERT(varchar(10), 日期, 120)  date,
+		                   经销商代码 siteCode,
+			       经销商名称 siteName,
+			       线路 route,
+			       估计立方 gf,
+			       实际立方 sf,
+			       货值 thingsValue,
+	   		  CONVERT(varchar(100), isnull(cast(round(abs(实际立方 - 估计立方) / nullif(实际立方, 0) * 100, 2) as
+                   numeric(20, 2)),0)) + '%' correctRate,
+              CONVERT(varchar(100), cast(round(货值 / 实际立方 * 100, 2) as numeric(20, 2))) + '%' volumeRatio
+			  from SMPV_ASC_Act_Detail t
+		 where t.日期  = #{dateValue,jdbcType=VARCHAR}
+		 <if test="route != 'sss'">
+		 	and t.线路  = #{route,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+	<!-- 查询月表格路线数据 -->
+	<select id="listRouteMonthInfo" resultType="map">
+		 select CONVERT(varchar(10), 日期, 120)  date,
+		                   经销商代码 siteCode,
+			       经销商名称 siteName,
+			       线路 route,
+			       估计立方 gf,
+			       实际立方 sf,
+			       货值 thingsValue,
+	   		  CONVERT(varchar(100), isnull(cast(round(abs(实际立方 - 估计立方) / nullif(实际立方, 0) * 100, 2) as
+                   numeric(20, 2)),0)) + '%' correctRate,
+              CONVERT(varchar(100), cast(round(货值 / 实际立方 * 100, 2) as numeric(20, 2))) + '%' volumeRatio
+			  from SMPV_ASC_Act_Detail t
+		 <if test="dateSymbol == 'sss'">
+		 	where CONVERT(varchar(4), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		 </if>
+		 <if test="dateSymbol != 'sss'">
+		 	where CONVERT(varchar(7), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		 </if>
+		    order by date
+	</select>
+</mapper>

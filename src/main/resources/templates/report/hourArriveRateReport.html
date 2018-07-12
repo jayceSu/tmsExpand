@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>小时到达率报表</title>
+</head>
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/report/wellenReport.css}" />
+<script type="text/javascript" th:src="@{/resources/js/common/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/echarts/echarts.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/report/hourArriveRateReport.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-zh-CN.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/tableExport.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-export.min.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	var ctx = /*[[@{/}]]*/ ;
+	/*]]>*/
+	var dateSymbol = 'day';
+	var dateValue = '';
+	var dayTable;
+	var weekTable;
+	
+	//通过bootstrap Table方法refresh重新加载数据
+	function showDayData() {
+		$('#tb_day').bootstrapTable('refresh');
+	}
+	function showWeekData() {
+		$('#tb_week').bootstrapTable('refresh');
+	}
+
+	
+	$(function(){
+		dateValue = $("#day").val();
+		dateSelectControl(); // 日期类型下拉选控制
+		loadBaseInfo(); // 加载基础信息
+		loadChart(); // 加载图表
+		
+		// 1.初始化dayTable
+	    dayTable = new DayTableInit();
+	    dayTable.Init();
+
+	    // 2.初始化weekTable
+	    weekTable = new WeekTableInit();
+	})
+	
+</script>
+<body>
+	<div style="display:none;" id="projectName" th:value="${projectName}"></div>
+	<div id="container">
+		<div id="base">
+			<div id="dateSelect1">
+				<select id="dateSelect" style="width:50px;">
+					<option value ="day">日</option>
+		 			<option value ="week">周</option>
+				</select>
+			</div>
+			<div id="dateContrl">
+				<input class="dateControl" type="date" id="day" th:value="${nowDay}" onchange="reLoadData()"/>
+				<input class="dateControl" type="week" id="week" th:value="${nowWeek}" style="display:none;" onchange="reLoadData()"/>
+			</div>
+			<div id="baseInfo">
+				<div class="baseData1">
+					<div class="baseName">总站点数：<label id="totalSiteNum">0</label></div>
+				</div>
+				<div class="baseData1">
+					<div class="baseName">总到达数：<label id="totalArriveNum">0</label></div>
+				</div>
+				<div class="baseData1">
+					<div class="baseName">&nbsp;<label></label></div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="chart">
+			
+		</div>
+		
+		<div id="showDetailButton" style="margin-left:20px;display:none;">
+			<input type="button" value="所有明细" onclick="showDeatil()"/>
+		</div>
+		
+		<div class="grid" id="dayGrid">
+			<table id="tb_day" class="table table-striped"></table>
+		</div>
+		<div class="grid" style="display:none;" id="weekGrid">
+			<table id="tb_week" class="table table-striped"></table>
+		</div>
+	</div>
+</body>
+</html>
+
+

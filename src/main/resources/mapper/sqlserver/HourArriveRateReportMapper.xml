@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.anji.tmsexpand.mapper.sqlserver.reports.IHourArriveRateReportMapper" >
+	
+	<!-- 查询基础数据 -->
+	<select id="queryBaseInfo" resultType="int">
+		select count(*) cou
+		  from AF001_Plan_Detail t
+		 where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and t.提货日期 = #{dateValue,jdbcType=VARCHAR}
+	   <if test="dateSymbol == 'arrive'">
+		   and t.签收日期 is not null
+	   </if>
+	</select>
+	
+	<!-- 查找图表数据 -->
+	<select id="queryChartData" resultType="map">
+		select s.endhour hour, count(*) num
+			  from AF001_Plan_Detail t
+			  left join smpv_hour s
+			    on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[ <= ]]> s.endhour and t.项目名称 = s.project)
+			 where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+			   and t.提货日期 = #{dateValue,jdbcType=VARCHAR}
+			   and t.签收日期 is not null
+			   and s.endhour is not null
+			 group by s.endhour
+			 order by cast(s.endhour as int)
+	</select>
+	
+</mapper>

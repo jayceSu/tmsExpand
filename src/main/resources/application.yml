@@ -1,0 +1,31 @@
+# Tomcat
+server:
+    tomcat:
+        uri-encoding: UTF-8
+        max-threads: 1000
+        min-spare-threads: 30
+    port: 8090
+    context-path: /tms
+    
+#数据源配置
+spring:
+  datasource:
+    oracleds: 
+      type: com.alibaba.druid.pool.DruidDataSource
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@10.102.10.98:1521:BMW
+      username: chelizi
+      password: chelizi
+    sqlserverds:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driverClassName: net.sourceforge.jtds.jdbc.Driver
+      url: jdbc:jtds:sqlserver://10.102.3.156:1433;DatabaseName=ESApp1
+      username: TMSUser
+      password: TMSUser 
+    #validationQuery: select 1
+  thymeleaf:                #THYMELEAF模板引擎     代替springmvc 的视图解析器
+        cache: false          #模板引擎 开发过程中关闭  否则会影响开发     
+        prefix: classpath:/templates/ 
+        suffix: .html
+        mode: HTML5
+        encoding: UTF-8

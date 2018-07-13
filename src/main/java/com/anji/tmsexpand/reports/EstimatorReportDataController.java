@@ -67,7 +67,8 @@ public class EstimatorReportDataController {
 			}else {
 				map.put("ygfs", df.format(resultMap.get("gf").doubleValue()));
 				map.put("sjfs", df.format(resultMap.get("sf")));
-				map.put("ygzql", df.format(Math.abs(resultMap.get("sf").doubleValue() - resultMap.get("gf").doubleValue())/resultMap.get("sf").doubleValue()*100));
+				map.put("ygzql", resultMap.get("sf").doubleValue() == 0 ? 0 :
+					df.format(Math.abs(resultMap.get("sf").doubleValue() - resultMap.get("gf").doubleValue())/resultMap.get("sf").doubleValue()*100));
 			}
 		} else if("week".equals(dateSymbol)) {
 			int year = Integer.parseInt(dateValue.split("-")[0]);
@@ -200,7 +201,8 @@ public class EstimatorReportDataController {
 				map.put("correctRate", df.format(Math.abs(rs.get(i).get("sf").doubleValue() - rs.get(i).get("gf").doubleValue())/rs.get(i).get("sf").doubleValue()*100) + "%");
 			}
 			map.put("thingsValue", df.format(rs.get(i).get("hz").doubleValue()));
-			map.put("volumeRatio", df.format(rs.get(i).get("hz").doubleValue()/rs.get(i).get("sf").doubleValue()*100) + "%");
+			map.put("volumeRatio", rs.get(i).get("sf").doubleValue() == 0 ? (0 + "%" ) : 
+				df.format(rs.get(i).get("hz").doubleValue()/rs.get(i).get("sf").doubleValue()*100) + "%");
 			result.add(map);
 		}
 		

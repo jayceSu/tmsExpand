@@ -4,67 +4,73 @@
 	
 	<!-- 查询日基础信息 -->
 	<select id="queryDayBaseInfo" resultType="map">
-		select sum(估计立方) gf, sum(实际立方) sf, sum(货值) thingsValue
-		  from SMPV_ASC_Act_Detail t
+		select sum(isnull(预估立方, 0)) gf, sum(isnull(体积, 0)) sf, sum(isnull(货值, 0)) thingsValue
+		  from AF001_Plan_Detail t
+		 where t.项目名称 = #{projectName,jdbcType=VARCHAR}
 		<if test="dateSymbol == 'day' or dateSymbol == 'week'">
-			where CONVERT(varchar(10), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+			and CONVERT(varchar(10), t.提货日期, 120) = #{dateValue,jdbcType=VARCHAR}
 		</if>
 		
 		<if test="dateSymbol == 'year'">
-			where CONVERT(varchar(4), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+			and CONVERT(varchar(4), t.提货日期, 120) = #{dateValue,jdbcType=VARCHAR}
 		</if>
 		
 		<if test="dateSymbol == 'month'">
-			where CONVERT(varchar(7), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+			and CONVERT(varchar(7), t.提货日期, 120) = #{dateValue,jdbcType=VARCHAR}
 		</if>
 	</select>
 	
 	<!-- 查询线路方数 -->
 	<select id="listRouteData" resultType="map">
-		select 线路 route, sum(估计立方) gf, sum(实际立方) sf, sum(货值) hz
-		  from SMPV_ASC_Act_Detail t
-		 where t.日期  = #{dateValue,jdbcType=VARCHAR}
-		 	group by 线路
-		 	order by 线路
+		select SUBSTRING(区域, 1, 3) route, sum(isnull(预估立方, 0)) gf, sum(isnull(体积, 0)) sf, sum(isnull(货值, 0)) hz
+		  from AF001_Plan_Detail t
+		 where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		 and t.提货日期  = #{dateValue,jdbcType=VARCHAR}
+		 	group by SUBSTRING(区域, 1, 3)
+		 	order by SUBSTRING(区域, 1, 3)
 	</select>
 	
 	<!-- 查询线路信息 -->
 	<select id="listRouteDayInfo" resultType="map">
-	    select CONVERT(varchar(10), 日期, 120)  date,
-		                   经销商代码 siteCode,
+	    select CONVERT(varchar(10), 提货日期, 120)  date,
+		                   经销商编码 siteCode,
 			       经销商名称 siteName,
-			       线路 route,
-			       估计立方 gf,
-			       实际立方 sf,
-			       货值 thingsValue,
-	   		  CONVERT(varchar(100), isnull(cast(round(abs(实际立方 - 估计立方) / nullif(实际立方, 0) * 100, 2) as
+			  SUBSTRING(区域, 1, 3) route,
+			  isnull(预估立方, 0) gf,
+			  isnull(体积, 0) sf,
+			  isnull(货值, 0) thingsValue,
+	   		  CONVERT(varchar(100), isnull(cast(round(abs(体积 - 预估立方) / nullif(体积, 0) * 100, 2) as
                    numeric(20, 2)),0)) + '%' correctRate,
-              CONVERT(varchar(100), cast(round(货值 / 实际立方 * 100, 2) as numeric(20, 2))) + '%' volumeRatio
-			  from SMPV_ASC_Act_Detail t
-		 where t.日期  = #{dateValue,jdbcType=VARCHAR}
+              CONVERT(varchar(100), isnull(cast(round(货值 / nullif(体积, 0) * 100, 2) as 
+                   numeric(20, 2)),0)) + '%' volumeRatio
+			  from AF001_Plan_Detail t
+		 where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		 and t.提货日期  = #{dateValue,jdbcType=VARCHAR}
 		 <if test="route != 'sss'">
-		 	and t.线路  = #{route,jdbcType=VARCHAR}
+		 	and SUBSTRING(区域, 1, 3) = #{route,jdbcType=VARCHAR}
 		 </if>
 	</select>
 	
 	<!-- 查询月表格路线数据 -->
 	<select id="listRouteMonthInfo" resultType="map">
-		 select CONVERT(varchar(10), 日期, 120)  date,
-		                   经销商代码 siteCode,
+		 select CONVERT(varchar(10), 提货日期, 120)  date,
+		                   经销商编码 siteCode,
 			       经销商名称 siteName,
-			       线路 route,
-			       估计立方 gf,
-			       实际立方 sf,
-			       货值 thingsValue,
-	   		  CONVERT(varchar(100), isnull(cast(round(abs(实际立方 - 估计立方) / nullif(实际立方, 0) * 100, 2) as
+			  SUBSTRING(区域, 1, 3) route,
+			  isnull(预估立方 , 0) gf,
+			  isnull(体积, 0) sf,
+			  isnull(货值, 0) thingsValue,
+	   		  CONVERT(varchar(100), isnull(cast(round(abs(体积 - 预估立方) / nullif(体积, 0) * 100, 2) as
                    numeric(20, 2)),0)) + '%' correctRate,
-              CONVERT(varchar(100), cast(round(货值 / 实际立方 * 100, 2) as numeric(20, 2))) + '%' volumeRatio
-			  from SMPV_ASC_Act_Detail t
+              CONVERT(varchar(100), isnull(cast(round(货值 / nullif(体积, 0) * 100, 2) as 
+               	   numeric(20, 2)),0)) + '%' volumeRatio
+			 from AF001_Plan_Detail t
+		 	where t.项目名称 = #{projectName,jdbcType=VARCHAR}
 		 <if test="dateSymbol == 'sss'">
-		 	where CONVERT(varchar(4), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		 	and CONVERT(varchar(4), t.提货日期, 120) = #{dateValue,jdbcType=VARCHAR}
 		 </if>
 		 <if test="dateSymbol != 'sss'">
-		 	where CONVERT(varchar(7), t.日期, 120) = #{dateValue,jdbcType=VARCHAR}
+		 	and CONVERT(varchar(7), t.提货日期, 120) = #{dateValue,jdbcType=VARCHAR}
 		 </if>
 		    order by date
 	</select>

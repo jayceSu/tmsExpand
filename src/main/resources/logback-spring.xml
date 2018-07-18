@@ -23,7 +23,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>D:/Log/TMS/logback.info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>C:/Log/TMSExpand/logback.info.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -39,7 +39,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>D:/Log/TMS/logback.error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>C:/Log/TMSExpand/logback.error.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
     
@@ -55,7 +55,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>D:/Log/TMS/logback.debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>C:/Log/TMSExpand/logback.debug.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
     
@@ -71,7 +71,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>D:/Log/TMS/logback.warn.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>C:/Log/TMSExpand/logback.warn.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
     

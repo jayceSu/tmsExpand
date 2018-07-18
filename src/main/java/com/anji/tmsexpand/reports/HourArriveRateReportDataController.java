@@ -34,7 +34,7 @@ public class HourArriveRateReportDataController {
 
 	private DecimalFormat df = new DecimalFormat("#.##");
 	private static final String[] HOURS = new String[] { "24", "48", "72", "96", "120", "144", "168"
-			, "192", "216", "240", "264", "288", "312"};
+			, "192", "216", "240", "264", "288", "312", "336", "360", "384", "408"};
 	
 	/**
 	 * 加载基础信息
@@ -195,7 +195,7 @@ public class HourArriveRateReportDataController {
 		ParamEntity model = new ParamEntity();
 		// 总站点数
 		int totalSiteNum = 0;
-		Integer[] arriveSites = new Integer[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
+		Integer[] arriveSites = new Integer[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		
 		int year = Integer.parseInt(dateValue.split("-")[0]);
 		int week = Integer.parseInt(dateValue.split("-")[1].substring(1));
@@ -222,7 +222,10 @@ public class HourArriveRateReportDataController {
 			arriveSites[10] += (Integer)data[10] - (Integer)data[9];
 			arriveSites[11] += (Integer)data[11] - (Integer)data[10];
 			arriveSites[12] += (Integer)data[12] - (Integer)data[11];
-			
+			arriveSites[13] += (Integer)data[13] - (Integer)data[12];
+			arriveSites[14] += (Integer)data[14] - (Integer)data[13];
+			arriveSites[15] += (Integer)data[15] - (Integer)data[14];
+			arriveSites[16] += (Integer)data[16] - (Integer)data[15];
 		}
 		
 		for(int i=0;i<arriveSites.length;i++) {
@@ -322,7 +325,7 @@ public class HourArriveRateReportDataController {
 	}
 	
 	public Object[] getData(List<Map<String, Object>> dataList) {
-		Object[] data = new Object[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
+		Object[] data = new Object[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		for(int i=0;i<dataList.size();i++) {
 			if(24 == (Integer)dataList.get(i).get("hour")) {
 				data[0] = dataList.get(i).get("num");
@@ -350,6 +353,14 @@ public class HourArriveRateReportDataController {
 				data[11] = dataList.get(i).get("num");
 			}else if(312 == (Integer)dataList.get(i).get("hour")) {
 				data[12] = dataList.get(i).get("num");
+			}else if(336 == (Integer)dataList.get(i).get("hour")) {
+				data[13] = dataList.get(i).get("num");
+			}else if(360 == (Integer)dataList.get(i).get("hour")) {
+				data[14] = dataList.get(i).get("num");
+			}else if(384 == (Integer)dataList.get(i).get("hour")) {
+				data[15] = dataList.get(i).get("num");
+			}else if(408 == (Integer)dataList.get(i).get("hour")) {
+				data[16] = dataList.get(i).get("num");
 			}
 		}
 		return data;

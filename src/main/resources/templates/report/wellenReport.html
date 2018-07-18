@@ -6,6 +6,7 @@
 </head>
 <link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap.min.css}" />
 <link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/DataTables.css}" />
 <link rel="stylesheet" th:href="@{/resources/css/report/wellenReport.css}" />
 <script type="text/javascript" th:src="@{/resources/js/common/jquery-3.3.1.min.js}"></script>
 <script type="text/javascript" th:src="@{/resources/js/common/echarts/echarts.min.js}"></script>
@@ -15,7 +16,7 @@
 <script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-zh-CN.min.js}"></script>
 <script type="text/javascript" th:src="@{/resources/js/common/bootstrap/tableExport.min.js}"></script>
 <script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-export.min.js}"></script>
-
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/DataTables.js}"></script>
 <script type="text/javascript" th:inline="javascript">
 	/*<![CDATA[*/
 	var ctx = /*[[@{/}]]*/ ;
@@ -90,10 +91,10 @@
 		</div>
 		
 		<div class="grid" id="dayGrid">
-			<table id="tb_day" class="table table-striped"></table>
+			<table id="tb_day" class="table table-striped table-bordered"></table>
 		</div>
 		<div class="grid" style="display:none;" id="weekGrid">
-			<table id="tb_week" class="table table-striped"></table>
+			<table id="tb_week" class="table table-striped table-bordered"></table>
 		</div>
 	</div>
 </body>

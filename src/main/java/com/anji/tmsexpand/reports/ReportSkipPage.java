@@ -183,4 +183,25 @@ public class ReportSkipPage {
 		
 		return "report/weekHourInfo";
 	}
+	
+	/**
+	 * 跳转至运输服务水平报表
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/transportReport")
+	public String transportReport(@PathParam(value = "projectName") String projectName, Model m) {
+		date = new Date();
+		m.addAttribute("projectName", projectName);
+		m.addAttribute("nowDay", sdf.format(date));
+		// 默认前第7天
+		m.addAttribute("sevenDaysAgo", DateUtil.getPastDate(7));
+		// 默认前第30天
+		m.addAttribute("thirtyDaysAgo", DateUtil.getPastDate(30));
+		// 默认前第90天
+		m.addAttribute("ninetyDaysAgo", DateUtil.getPastDate(90));
+		return "report/transportReport";
+	}
+	
+	
 }

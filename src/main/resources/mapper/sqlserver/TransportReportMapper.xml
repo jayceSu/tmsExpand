@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.anji.tmsexpand.mapper.sqlserver.reports.ITransportReportMapper" >
+	
+	<!-- 查询数据 -->
+	<select id="listData" resultType="map"
+		parameterType="com.anji.tmsexpand.entity.DateEntity">
+		select a.startDate,
+		       a.endDate,
+		       a.endHour,
+		       isnull(a.locCou, 0) locCou,
+		       isnull(b.cou, 0) cou,
+		       isnull(a.allLocNum, 0) allLocNum,
+		       isnull(b.locKm, 0) locKm,
+		       cast(cast(isnull(a.locCou, 0) as decimal(18, 4)) /
+		            cast(isnull(a.allLocNum, 1) as decimal(18, 4)) * 100 as
+		            decimal(18, 2)) hourLocAll, --累加小时到达率
+		       cast(cast(isnull(b.cou, 0) as decimal(18, 4)) /
+		            cast(isnull(a.allLocNum, 1) as decimal(18, 4)) * 100 as
+		            decimal(18, 2)) hourLoc, --小时到达率
+		       cast(isnull(b.locKm, 0) / isnull(b.cou, 1) as decimal(18, 2)) averageKm --平均公里
+		  from (   
+		        select #{timeBegin,jdbcType=VARCHAR} startDate,
+		                #{timeEnd,jdbcType=VARCHAR} endDate,
+		                s.endhour,
+		                count(*) locCou,
+		                (select count(*)
+		                   from AF001_Plan_Detail t
+		                  where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		                    and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
+		                    and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
+		          from AF001_Plan_Detail t
+		          left join smpv_hour s
+		            on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
+		               t.项目名称 = s.project)
+		         where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		           and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
+		           and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		           and t.签收日期 is not null
+		           and s.endhour is not null
+		         group by s.endhour) A
+		  left join (
+		             select #{timeBegin,jdbcType=VARCHAR} startDate,
+		                     #{timeEnd,jdbcType=VARCHAR} endDate,
+		                     s.endhour,
+		                     count(*) cou,
+		                     sum(isnull(sa.里程, 0)) locKm
+		               from AF001_Plan_Detail t
+		               left join AF001_Supplier_Detail sa
+		                 on (t.经销商编码 = sa.经销商编码 and t.项目名称 = sa.项目名称)
+		               left join smpv_hour s
+		                 on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
+		                    DATEDIFF(hour, t.第一站日期, t.签收日期) > s.StartHour and
+		                    t.项目名称 = s.project)
+		              where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[>]]> #{timeBegin,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		                and t.签收日期 is not null
+		                and s.endhour is not null
+		              group by s.endhour) b
+		    on (a.startDate = b.startDate and a.endDate = b.endDate and
+		       a.EndHour = b.EndHour)
+	</select>
+	
+	<!-- 查询表格数据 -->
+	<select id="listDataForTable" resultType="map"
+		parameterType="com.anji.tmsexpand.entity.DateEntity">
+		select #{dateSymbol,jdbcType=VARCHAR} date,
+			   a.startDate,
+		       a.endDate,
+		       a.endHour,
+		       isnull(a.locCou, 0) locCou,
+		       isnull(b.cou, 0) cou,
+		       isnull(a.allLocNum, 0) allLocNum,
+		       isnull(b.locKm, 0) locKm,
+		       CONVERT(varchar(100),cast(cast(isnull(a.locCou, 0) as decimal(18, 4)) /
+		            cast(isnull(a.allLocNum, 1) as decimal(18, 4)) * 100 as
+		            decimal(18, 2))) + '%' hourLocAll, --累加小时到达率
+		       CONVERT(varchar(100),cast(cast(isnull(b.cou, 0) as decimal(18, 4)) /
+		            cast(isnull(a.allLocNum, 1) as decimal(18, 4)) * 100 as
+		            decimal(18, 2))) + '%' hourLoc, --小时到达率
+		       cast(isnull(b.locKm, 0) / isnull(b.cou, 1) as decimal(18, 2)) averageKm --平均公里
+		  from (   
+		        select #{timeBegin,jdbcType=VARCHAR} startDate,
+		               #{timeEnd,jdbcType=VARCHAR} endDate,
+		                s.endhour,
+		                count(*) locCou,
+		                (select count(*)
+		                   from AF001_Plan_Detail t
+		                  where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		                    and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
+		                    and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
+		          from AF001_Plan_Detail t
+		          left join smpv_hour s
+		            on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
+		               t.项目名称 = s.project)
+		         where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		           and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
+		           and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		           and t.签收日期 is not null
+		           and s.endhour is not null
+		         group by s.endhour) A
+		  left join (
+		             select #{timeBegin,jdbcType=VARCHAR} startDate,
+		                     #{timeEnd,jdbcType=VARCHAR} endDate,
+		                     s.endhour,
+		                     count(*) cou,
+		                     sum(isnull(sa.里程, 0)) locKm
+		               from AF001_Plan_Detail t
+		               left join AF001_Supplier_Detail sa
+		                 on (t.经销商编码 = sa.经销商编码 and t.项目名称 = sa.项目名称)
+		               left join smpv_hour s
+		                 on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
+		                    DATEDIFF(hour, t.第一站日期, t.签收日期) > s.StartHour and
+		                    t.项目名称 = s.project)
+		              where t.项目名称 = #{projectName,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[>]]> #{timeBegin,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		                and t.签收日期 is not null
+		                and s.endhour is not null
+		              group by s.endhour) b
+		    on (a.startDate = b.startDate and a.endDate = b.endDate and
+		       a.EndHour = b.EndHour)
+	</select>
+</mapper>

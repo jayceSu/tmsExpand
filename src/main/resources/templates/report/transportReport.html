@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>运输服务水平报表</title>
+</head>
+<link rel="stylesheet" th:href="@{/resources/css/report/transportReport.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/bootstrap/DataTables.css}" />
+<script type="text/javascript" th:src="@{/resources/js/common/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/echarts/echarts.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/report/transportReport.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-zh-CN.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/tableExport.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/bootstrap-table-export.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/js/common/bootstrap/DataTables.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	var ctx = /*[[@{/}]]*/ ;
+	/*]]>*/
+	var dateFlag1 = true;
+	var dateFlag2 = true;
+	var dateFlag3 = true;
+	var table;
+	
+	
+	//通过bootstrap Table方法refresh重新加载数据
+	function showTableData() {
+		$('#tb').bootstrapTable('refresh');
+	}
+
+	
+	$(function(){
+		dateValue = $("#day").val();
+		loadAllChart(); // 加载所有图表
+		
+		// 1.初始化Table
+	    table = new tableInit();
+	    table.Init();
+	})
+	
+</script>
+<body>
+	<div style="display:none;" id="projectName" th:value="${projectName}"></div>
+	<div id="container">
+		<!-- 查询条件 -->
+		<div id="search-condition">
+			<!-- 日期段1 -->
+			<div class="time-area">
+				<div class="time-text">日期段1：</div>
+				<div class="time-control">
+					<input type="date" id="time-1-begin" th:value="${sevenDaysAgo}"/>
+				</div>
+				<div class="time-to">~</div>
+				<div class="time-control">
+					<input type="date" id="time-1-end" th:value="${nowDay}"/>
+				</div>
+			</div>
+			
+			<!-- 日期段2 -->
+			<div class="time-area">
+				<div class="time-text">日期段2：</div>
+				<div class="time-control">
+					<input type="date" id="time-2-begin" th:value="${thirtyDaysAgo}"/>
+				</div>
+				<div class="time-to">~</div>
+				<div class="time-control">
+					<input type="date" id="time-2-end" th:value="${nowDay}"/>
+				</div>
+			</div>
+			
+			<!-- 日期段3 -->
+			<div class="time-area">
+				<div class="time-text">日期段3：</div>
+				<div class="time-control">
+					<input type="date" id="time-3-begin" th:value="${ninetyDaysAgo}"/>
+				</div>
+				<div class="time-to">~</div>
+				<div class="time-control">
+					<input type="date" id="time-3-end" th:value="${nowDay}"/>
+				</div>
+			</div>
+			
+			<!-- 查询按钮 -->
+			<div class="time-area">
+				<div class="queryButton">
+					<input type="button" value="查询" onclick="queryData()"/>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 图表 -->
+		<div class="chart" id="hourCoverAddChart"></div>
+		<div class="chart" id="hourCoverChart"></div>
+		<div class="chart" id="milesChart"></div>
+		<div class="chart" id="sitesChart"></div>
+		
+		<!-- 表格 -->
+		<div class="grid">
+			<table id="tb" class="table table-striped table-bordered"></table>
+		</div>
+	</div>
+</body>
+</html>
+
+

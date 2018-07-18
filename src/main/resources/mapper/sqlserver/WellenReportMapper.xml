@@ -48,9 +48,37 @@
 		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
 	</select>
 	
+	<!-- 获取应到站点数 -->
+	<select id="getShouldArrvieNums" resultType="int">
+		select count(*)
+		  from dbo . AF001_Plan_Detail
+		 where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		   and CONVERT(varchar(10), 要求到货日期, 120) <![CDATA[<=]]>
+		       CONVERT(varchar(10), GETDATE(), 120)
+	</select>
+	
+	<!-- 获取准点率 -->
+	<select id="getOnTimePer" resultType="Object">
+		select (1 - cast(sum(cnum) / sum(num) as decimal(18, 4))) * 100
+		  from (select 1 num,
+		               case
+		                 when CONVERT(varchar(10), isnull(签收日期, getdate()), 120) >
+		                      CONVERT(varchar(10), 要求到货日期, 120) then
+		                  1
+		                 else
+		                  0
+		               end Cnum
+		          from dbo . AF001_Plan_Detail
+		         where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		           and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		           and CONVERT(varchar(10), 要求到货日期, 120) <![CDATA[<=]]>
+		               CONVERT(varchar(10), GETDATE(), 120)) a
+	</select>
+	
 	<!-- 路线订单数 -->
 	<select id="ListOrderRoute" resultType="com.anji.tmsexpand.ParamEntity">
-		 select count(*) num, SUBSTRING(区域, 1, 3)route
+		 select count(*) num, SUBSTRING(区域, 1, 3) route
 			 from dbo . AF001_Plan_Detail t
 			where 项目名称 = #{projectName,jdbcType=VARCHAR}
 			  and 提货日期 = #{dateValue,jdbcType=VARCHAR}
@@ -104,6 +132,17 @@
 		   and 提货日期 = #{dateValue,jdbcType=VARCHAR}
 		   and (破损件数 is not null or 破损件数 != 0)
 		 group by SUBSTRING(区域, 1, 3)
+	</select>
+	
+	<!-- 路线应到站点数 -->
+	<select id="ListShouldArriveRoute" resultType="com.anji.tmsexpand.ParamEntity">
+		select count(*) num, SUBSTRING(区域, 1, 3) route
+		 from dbo . AF001_Plan_Detail t
+		where 项目名称 = #{projectName,jdbcType=VARCHAR}
+		  and 提货日期 = #{dateValue,jdbcType=VARCHAR}
+		  and CONVERT(varchar(10), 要求到货日期, 120) <![CDATA[ <= ]]> 
+			  CONVERT(varchar(10), GETDATE(), 120)
+		group by SUBSTRING(区域, 1, 3)
 	</select>
 	
 	<!-- 日线路详细信息 -->

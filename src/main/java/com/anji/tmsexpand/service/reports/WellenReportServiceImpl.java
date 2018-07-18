@@ -80,6 +80,21 @@ public class WellenReportServiceImpl implements IWellenReportService {
 	public List<Map<String, String>> listRouteWeekInfo(ParamEntity model) {
 		return mapper.listRouteWeekInfo(model);
 	}
+
+	@Override
+	public int getShouldArrvieNums(String projectName, String dateValue) {
+		return mapper.getShouldArrvieNums(projectName, dateValue);
+	}
+
+	@Override
+	public Object getOnTimePer(String projectName, String dateValue) {
+		return mapper.getOnTimePer(projectName, dateValue);
+	}
+
+	@Override
+	public List<ParamEntity> ListShouldArriveRoute(ParamEntity model) {
+		return mapper.ListShouldArriveRoute(model);
+	}
 	
 	
 }

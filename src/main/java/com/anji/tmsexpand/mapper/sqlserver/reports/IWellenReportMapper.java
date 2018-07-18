@@ -106,4 +106,27 @@ public interface IWellenReportMapper {
 	 * @return
 	 */
 	List<Map<String, String>> listRouteWeekInfo(ParamEntity model);
+	
+	/**
+	 * 获取应到站点数
+	 * @param projectName
+	 * @param dateValue
+	 * @return
+	 */
+	int getShouldArrvieNums(@Param("projectName")String projectName, @Param("dateValue")String dateValue);
+	
+	/**
+	 * 获取准点率
+	 * @param projectName
+	 * @param dateValue
+	 * @return
+	 */
+	Object getOnTimePer(@Param("projectName")String projectName, @Param("dateValue")String dateValue);
+	
+	/**
+	 * 路线应到站点数
+	 * @param model
+	 * @return
+	 */
+	List<ParamEntity> ListShouldArriveRoute(ParamEntity model);
 }

@@ -66,12 +66,14 @@ public class WellenReportDataController {
 			int totalOrderNums = service.getTotalOrderNums(projectName, dateValue);
 			// 总到达数
 			int totalArriveNums = service.getTotalArriveNums(projectName, dateValue);
+			// 应到站点数
+			int shouldArriveNums = service.getShouldArrvieNums(projectName, dateValue);
 			// 订单总迟到
 			int totalLateNums = service.getTotalLateNums(projectName, dateValue);
 			// 准点率
-			double onTimePer = totalOrderNums == 0 ? 0.00
+			double onTimePer = shouldArriveNums == 0 ? 100
 					: Double.parseDouble(
-							df.format((double) (totalOrderNums - totalLateNums) / (double) totalOrderNums * 100));
+							df.format((1-((double) totalLateNums / (double) shouldArriveNums))*100));
 			// 破损件数
 			int totalDestroyNums = service.getTotalDestroyNums(projectName, dateValue);
 			// 破损率
@@ -81,6 +83,7 @@ public class WellenReportDataController {
 			map.put("totalSiteNums", totalSiteNums);
 			map.put("totalArriveNums", totalArriveNums);
 			map.put("totalLateNums", totalLateNums);
+			map.put("shouldArriveNums", shouldArriveNums);
 			map.put("onTimePer", onTimePer);
 			map.put("destroyPer", destroyPer);
 		} else {
@@ -93,6 +96,8 @@ public class WellenReportDataController {
 			int totalOrderNums = 0;
 			// 总到达数
 			int totalArriveNums = 0;
+			// 应到站点数
+			int shouldArriveNums = 0;
 			// 订单总迟到数
 			int totalLateNums = 0;
 			// 准点率
@@ -106,19 +111,21 @@ public class WellenReportDataController {
 				totalSiteNums += service.getTotalSiteNums(projectName, dates[i]);
 				totalOrderNums += service.getTotalOrderNums(projectName, dates[i]);
 				totalArriveNums += service.getTotalArriveNums(projectName, dates[i]);
+				shouldArriveNums += service.getShouldArrvieNums(projectName, dates[i]);
 				totalLateNums += service.getTotalLateNums(projectName, dates[i]);
 				totalDestroyNums += service.getTotalDestroyNums(projectName, dates[i]);
 			}
 
-			onTimePer = totalOrderNums == 0 ? 0.00
+			onTimePer = shouldArriveNums == 0 ? 100
 					: Double.parseDouble(
-							df.format((double) (totalArriveNums - totalLateNums) / (double) totalOrderNums * 100));
+							df.format((1-((double) totalLateNums / (double) shouldArriveNums))*100));
 			destroyPer = totalOrderNums == 0 ? 0.00
 					: Double.parseDouble(df.format((double) totalDestroyNums / (double) totalOrderNums * 100));
 
 			map.put("totalSiteNums", totalSiteNums);
 			map.put("totalArriveNums", totalArriveNums);
 			map.put("totalLateNums", totalLateNums);
+			map.put("shouldArriveNums", shouldArriveNums);
 			map.put("onTimePer", onTimePer);
 			map.put("destroyPer", destroyPer);
 		}
@@ -144,7 +151,7 @@ public class WellenReportDataController {
 		String projectName = (String) paramMap.get("projectName");
 		model.setDateValue(dateValue);
 		model.setProjectName(projectName);
-
+		
 		if ("day".equals(dateSymbol)) {
 			List<ParamEntity> orderList = service.ListOrderRoute(model);
 			List<ParamEntity> arriveList = service.ListArriveRoute(model);
@@ -262,6 +269,7 @@ public class WellenReportDataController {
 		List<ParamEntity> siteList = service.ListSiteRoute(model);
 		List<ParamEntity> orderList = service.ListOrderRoute(model);
 		List<ParamEntity> arriveList = service.ListArriveRoute(model);
+		List<ParamEntity> shouldArriveList = service.ListShouldArriveRoute(model);
 		List<ParamEntity> lateList = service.ListLateRoute(model);
 		List<ParamEntity> destroyList = service.ListDestroyRoute(model);
 
@@ -381,12 +389,34 @@ public class WellenReportDataController {
 			if (!flag1) {
 				map.put("destroyNums", "0");
 			}
+			
+			flag1 = false;
+			// 各路线应到达
+			for (int j = 0; j < shouldArriveList.size(); j++) {
+				if (shouldArriveList.get(j).getRoute() == null) {
+					if (routeList.get(i).getRoute() == null) {
+						map.put("shouldNums", shouldArriveList.get(j).getNum());
+						flag1 = true;
+						break;
+					}
+				} else {
+					if (shouldArriveList.get(j).getRoute().equals(routeList.get(i).getRoute())) {
+						map.put("shouldNums", shouldArriveList.get(j).getNum());
+						flag1 = true;
+						break;
+					}
+				}
+			}
+			if (!flag1) {
+				map.put("shouldNums", "0");
+			}
 
 			// 准点率
-			double onTimePer = Integer.parseInt(map.get("orderNums")) == 0 ? 0.00
-					: Double.parseDouble(df.format(
-							(double) (Integer.parseInt(map.get("orderNums")) - Integer.parseInt(map.get("lateNums")))
-									/ (double) Integer.parseInt(map.get("orderNums")) * 100));
+			double onTimePer = Integer.parseInt(map.get("shouldNums")) == 0 ? 100
+					: Double.parseDouble(
+							df.format(
+									(1-(double) Integer.parseInt(map.get("lateNums")) / (double) Integer.parseInt(map.get("shouldNums")))*100
+									));
 			map.put("onTimePer", onTimePer + "%");
 			
 			// 破损率
@@ -446,12 +476,14 @@ public class WellenReportDataController {
 			int totalOrderNums = service.getTotalOrderNums(projectName, dates[i]);
 			// 总到达数
 			int totalArriveNums = service.getTotalArriveNums(projectName, dates[i]);
+			// 应到站点数
+			int shouldArriveNums = service.getShouldArrvieNums(projectName, dates[i]);
 			// 订单总迟到
 			int totalLateNums = service.getTotalLateNums(projectName, dates[i]);
 			// 准点率
-			double onTimePer = totalOrderNums == 0 ? 0.00
+			double onTimePer = shouldArriveNums == 0 ? 100
 					: Double.parseDouble(
-							df.format((double) (totalOrderNums - totalLateNums) / (double) totalOrderNums * 100));
+							df.format((1-((double) totalLateNums / (double) shouldArriveNums))*100));
 			// 破损件数
 			int totalDestroyNums = service.getTotalDestroyNums(projectName, dates[i]);
 			// 破损率
@@ -462,6 +494,7 @@ public class WellenReportDataController {
 			map.put("day", WEEKS[i]);
 			map.put("siteNums", totalSiteNums + "");
 			map.put("arriveNums", totalArriveNums + "");
+			map.put("shouldNums", shouldArriveNums + "");
 			map.put("lateNums", totalLateNums + "");
 			map.put("onTimePer", onTimePer + "%");
 			map.put("destroyPer", destroyPer + "%");

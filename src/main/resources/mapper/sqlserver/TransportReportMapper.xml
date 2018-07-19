@@ -27,15 +27,15 @@
 		                (select count(*)
 		                   from AF001_Plan_Detail t
 		                  where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		                    and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
-		                    and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
+		                    and t.提货日期 >= #{timeBegin,jdbcType=VARCHAR}
+		                    and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
 		          from AF001_Plan_Detail t
 		          left join smpv_hour s
 		            on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
 		               t.项目名称 = s.project)
 		         where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		           and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
-		           and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		           and t.提货日期 >= #{timeBegin,jdbcType=VARCHAR}
+		           and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}
 		           and t.签收日期 is not null
 		           and s.endhour is not null
 		         group by s.endhour) A
@@ -53,8 +53,8 @@
 		                    DATEDIFF(hour, t.第一站日期, t.签收日期) > s.StartHour and
 		                    t.项目名称 = s.project)
 		              where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		                and t.提货日期 <![CDATA[>]]> #{timeBegin,jdbcType=VARCHAR}
-		                and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[>=]]> #{timeBegin,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}
 		                and t.签收日期 is not null
 		                and s.endhour is not null
 		              group by s.endhour) b
@@ -88,15 +88,15 @@
 		                (select count(*)
 		                   from AF001_Plan_Detail t
 		                  where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		                    and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
-		                    and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
+		                    and t.提货日期 >= #{timeBegin,jdbcType=VARCHAR}
+		                    and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}) allLocNum
 		          from AF001_Plan_Detail t
 		          left join smpv_hour s
 		            on (DATEDIFF(hour, t.第一站日期, t.签收日期) <![CDATA[<=]]> s.endhour and
 		               t.项目名称 = s.project)
 		         where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		           and t.提货日期 > #{timeBegin,jdbcType=VARCHAR}
-		           and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		           and t.提货日期 >= #{timeBegin,jdbcType=VARCHAR}
+		           and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}
 		           and t.签收日期 is not null
 		           and s.endhour is not null
 		         group by s.endhour) A
@@ -114,8 +114,8 @@
 		                    DATEDIFF(hour, t.第一站日期, t.签收日期) > s.StartHour and
 		                    t.项目名称 = s.project)
 		              where t.项目名称 = #{projectName,jdbcType=VARCHAR}
-		                and t.提货日期 <![CDATA[>]]> #{timeBegin,jdbcType=VARCHAR}
-		                and t.提货日期 <![CDATA[<]]> #{timeEnd,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[>=]]> #{timeBegin,jdbcType=VARCHAR}
+		                and t.提货日期 <![CDATA[<=]]> #{timeEnd,jdbcType=VARCHAR}
 		                and t.签收日期 is not null
 		                and s.endhour is not null
 		              group by s.endhour) b

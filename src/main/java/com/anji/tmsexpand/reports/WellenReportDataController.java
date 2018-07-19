@@ -448,7 +448,7 @@ public class WellenReportDataController {
 	}
 
 	/**
-	 * 加载路线详细信息表格数据
+	 * 加载周表格数据
 	 * 
 	 * @param limit
 	 * @param offset

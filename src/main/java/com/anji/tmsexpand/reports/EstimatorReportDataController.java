@@ -287,8 +287,8 @@ public class EstimatorReportDataController {
 				map.put("sf", df.format(resultMap.get("sf").doubleValue()));
 				map.put("thingsValue", df.format(resultMap.get("thingsValue").doubleValue()));
 				if(resultMap.get("sf").doubleValue() == 0) {
-					map.put("correctRate", 0.0 + "%");
-					map.put("volumeRatio", 0.0 + "%");
+					map.put("correctRate", 0 + "%");
+					map.put("volumeRatio", 0 + "%");
 				}else {
 					map.put("correctRate", df.format(Math.abs(resultMap.get("sf").doubleValue() - resultMap.get("gf").doubleValue())/resultMap.get("sf").doubleValue()*100) + "%");
 					map.put("volumeRatio", df.format(resultMap.get("thingsValue").doubleValue()/resultMap.get("sf").doubleValue()*100) + "%");
@@ -375,8 +375,8 @@ public class EstimatorReportDataController {
 				map.put("gf", 0);
 				map.put("sf", 0);
 				map.put("thingsValue", 0);
-				map.put("correctRate", 0.0 + "%");
-				map.put("volumeRatio", 0.0 + "%");
+				map.put("correctRate", 0 + "%");
+				map.put("volumeRatio", 0 + "%");
 			}else {
 				map.put("month", dateValue + "年" + MONTHS[i]);
 				map.put("date", dateValue + "-" + MONTH_DATE[i]);
@@ -384,8 +384,8 @@ public class EstimatorReportDataController {
 				map.put("sf", df.format(resultMap.get("sf").doubleValue()));
 				map.put("thingsValue", df.format(resultMap.get("thingsValue").doubleValue()));
 				if(resultMap.get("sf").doubleValue() == 0) {
-					map.put("correctRate", 0.0 + "%");
-					map.put("volumeRatio", 0.0 + "%");
+					map.put("correctRate", 0 + "%");
+					map.put("volumeRatio", 0 + "%");
 				}else {
 					map.put("correctRate", df.format(Math.abs(resultMap.get("sf").doubleValue() - resultMap.get("gf").doubleValue())/resultMap.get("sf").doubleValue()*100) + "%");
 					map.put("volumeRatio", df.format(resultMap.get("thingsValue").doubleValue()/resultMap.get("sf").doubleValue()*100) + "%");

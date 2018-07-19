@@ -94,7 +94,7 @@ function loadBaseInfo(){
 // 跳转至明细页面
 function showDeatil(){
 	window.open(ctx + '/hourWeekInfo?hour=' + "sss"+ "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-			 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
+			 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
 }
 
 // 单条线的折线图
@@ -256,7 +256,7 @@ var DayTableInit = function () {
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -296,25 +296,35 @@ var DayTableInit = function () {
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center'
             },{
                 field: 'date',
-                title: '发货日'
+                title: '发货日',
+                align: 'center'
             }, {
                 field: 'hour',
-                title: '小时'
+                title: '小时',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'arriveSite',
-                title: '到达站点数'
+                title: '到达站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'addArriveSite',
-                title: '累计到达站点数'
+                title: '累计到达站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'totalSite',
-                title: '总站点数'
+                title: '总站点数',
+                align: 'center'
             }, {
                 field: 'hourRate',
-                title: '小时覆盖率'
+                title: '小时覆盖率',
+                align: 'center'
             } ]
         });
     };
@@ -347,7 +357,7 @@ var WeekTableInit = function () {
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -383,7 +393,7 @@ var WeekTableInit = function () {
             //双击触发的事件，当双击就会获取row，row就是该整行的内容，其中"row.playerName"中"playerName"是data-field定义的字段，（如果在js中定义，就是field定义的字段,）可以通过该方法获取该行所有列的值
             onDblClickRow: function (row) {
             	 window.open(ctx + '/hourWeekInfo?hour=' + row.hour + "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-            			 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
+            			 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
             },
             columns: [{
                 checkbox: false
@@ -392,22 +402,30 @@ var WeekTableInit = function () {
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center',
             },{
                 field: 'date',
-                title: '周'
+                title: '周',
+                align: 'center',
             }, {
                 field: 'hour',
-                title: '小时'
+                title: '小时',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'arriveSite',
-                title: '到达总站点数'
+                title: '到达总站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'totalSite',
-                title: '周总站点数'
+                title: '周总站点数',
+                align: 'center'
             }, {
                 field: 'hourRate',
-                title: '小时覆盖率'
+                title: '小时覆盖率',
+                align: 'center',
             } ]
         });
     };

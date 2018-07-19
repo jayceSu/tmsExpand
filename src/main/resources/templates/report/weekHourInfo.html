@@ -48,7 +48,7 @@
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -88,25 +88,35 @@
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center',
             },{
                 field: 'date',
-                title: '发货日'
+                title: '发货日',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'hour',
-                title: '小时'
+                title: '小时',
+                align: 'center',
             }, {
                 field: 'arriveSite',
-                title: '到达站点数'
+                title: '到达站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'addArriveSite',
-                title: '累计到达站点数'
+                title: '累计到达站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'totalSite',
-                title: '总站点数'
+                title: '总站点数',
+                align: 'center',
             }, {
                 field: 'hourRate',
-                title: '小时覆盖率'
+                title: '小时覆盖率',
+                align: 'center',
             } ]
         });
     };

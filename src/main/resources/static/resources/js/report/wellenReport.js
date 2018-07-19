@@ -96,10 +96,10 @@ function dateSelectControl(){
 function showDeatil(){
 	if("day" == dateSymbol){
 		window.open(ctx + '/dayRouteInfo?route=' + 'sss' + "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-				 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
+				 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
 	}else{
 		window.open(ctx + '/weekRouteInfo?date=' + 'sss' + "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-	  			 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
+	  			 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
 	}
 }
 
@@ -230,7 +230,8 @@ var DayTableInit = function () {
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
+//            sortName: 'siteNums', // 要排序的字段
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -266,7 +267,7 @@ var DayTableInit = function () {
             //双击触发的事件，当双击就会获取row，row就是该整行的内容，其中"row.playerName"中"playerName"是data-field定义的字段，（如果在js中定义，就是field定义的字段,）可以通过该方法获取该行所有列的值
             onDblClickRow: function (row) {
             	 window.open(ctx + '/dayRouteInfo?route=' + row.route + "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-            			 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
+            			 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
             },
             columns: [{
                 checkbox: false
@@ -275,31 +276,45 @@ var DayTableInit = function () {
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center',
             },{
                 field: 'date',
-                title: '日期'
+                title: '日期',
+                align: 'center',
             }, {
                 field: 'route',
-                title: '路线号'
+                title: '路线号',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'siteNums',
-                title: '总站点数'
+                title: '总站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'arriveNums',
-                title: '总到达'
+                title: '总到达',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'lateNums',
-                title: '总迟到'
+                title: '总迟到',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'shouldNums',
-                title: '应到站点数'
+                title: '应到站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'onTimePer',
-                title: '准点率'
+                title: '准点率',
+                align: 'center'
             }, {
                 field: 'destroyPer',
-                title: '破损率'
+                title: '破损率',
+                align: 'center'
             } ]
         });
     };
@@ -338,7 +353,7 @@ var WeekTableInit = function () {
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -374,7 +389,7 @@ var WeekTableInit = function () {
             //双击触发的事件，当双击就会获取row，row就是该整行的内容，其中"row.playerName"中"playerName"是data-field定义的字段，（如果在js中定义，就是field定义的字段,）可以通过该方法获取该行所有列的值
             onDblClickRow: function (row) {
             	window.open(ctx + '/weekRouteInfo?date=' + row.date + "&projectName=" + $("#projectName").attr('value') + "&dateValue=" + dateValue,
-           			 'newwindow', 'height=530, width=950, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
+           			 'newwindow', 'height=530, width=1000, top=100, left=150, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no')
             },
             columns: [{
                 checkbox: false
@@ -383,31 +398,44 @@ var WeekTableInit = function () {
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center'
             }, {
                 field: 'weekNum',
-                title: '第几周'
+                title: '第几周',
+                align: 'center'
             }, {
                 field: 'day',
-                title: '周'
+                title: '周',
+                align: 'center'
             }, {
                 field: 'siteNums',
-                title: '总站点数'
+                title: '总站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'arriveNums',
-                title: '总到达'
+                title: '总到达',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'lateNums',
-                title: '总迟到'
+                title: '总迟到',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'shouldNums',
-                title: '应到站点数'
+                title: '应到站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'onTimePer',
-                title: '准点率'
+                title: '准点率',
+                align: 'center'
             }, {
                 field: 'destroyPer',
-                title: '破损率'
+                title: '破损率',
+                align: 'center'
             } ]
         });
     };

@@ -442,7 +442,7 @@ var tableInit = function () {
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
+            sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
@@ -482,37 +482,53 @@ var tableInit = function () {
                 title: '序号',
                 formatter: function (value, row, index) {
                     return index+1;
-                }
+                },
+                align: 'center',
             },{
                 field: 'date',
-                title: '日期段'
+                title: '日期段',
+                align: 'center',
             }, {
                 field: 'startDate',
-                title: '开始日期'
+                title: '开始日期',
+                align: 'center',
             }, {
                 field: 'endDate',
-                title: '结束日期'
+                title: '结束日期',
+                align: 'center',
             }, {
                 field: 'endHour',
-                title: '小时'
+                title: '小时',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'cou',
-                title: '分段站点'
+                title: '分段站点',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'hourLoc',
-                title: '小时到达率'
+                title: '小时到达率',
+                align: 'center',
             }, {
                 field: 'hourLocAll',
-                title: '累加小时到达率'
+                title: '累加小时到达率',
+                align: 'center',
             }, {
                 field: 'allLocNum',
-                title: '总站点数'
+                title: '总站点数',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'averageKm',
-                title: '平均公里'
+                title: '平均公里',
+                align: 'center',
+                sortable: true
             }, {
                 field: 'locKm',
-                title: '总公里'
+                title: '总公里',
+                align: 'center',
+                sortable: true
             } ]
         });
     };
